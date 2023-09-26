@@ -8,6 +8,7 @@ import java.awt.event.ActionListener;
 import java.net.URI;
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.net.URLEncoder;
 import java.awt.event.*;
 
 public class Karyalayamap extends JFrame implements ActionListener {
@@ -119,18 +120,22 @@ public void actionPerformed(ActionEvent ae) {
         int selectedRowIndex = distanceTable.getSelectedRow();
         
         if (selectedRowIndex != -1) {
-            String selectedDestination = (String) distanceTable.getValueAt(selectedRowIndex, 1);
-            String url = "https://www.google.com/maps/dir/?api=1&origin=" + startLocation + "&destination=" + selectedDestination;
-            
-            try {
-                Desktop.getDesktop().browse(new URI(url));
-            } catch (IOException | URISyntaxException ex) {
-                ex.printStackTrace();
-            }
-        } else {
-            // Display an error message if no destination is selected
-            JOptionPane.showMessageDialog(this, "Please select a destination.");
-        }
+    String selectedDestination = (String) distanceTable.getValueAt(selectedRowIndex, 1);
+
+    try {
+        startLocation = URLEncoder.encode(startLocation, "UTF-8");
+        selectedDestination = URLEncoder.encode(selectedDestination, "UTF-8");
+
+        String url = "https://www.google.com/maps/dir/?api=1&origin=" + startLocation + "&destination=" + selectedDestination;
+
+        Desktop.getDesktop().browse(new URI(url));
+    } catch (IOException | URISyntaxException ex) {
+        ex.printStackTrace();
+    }
+} else {
+    // Display an error message if no destination is selected
+    JOptionPane.showMessageDialog(this, "Please select a destination.");
+}
     }
     
     else if (ae.getSource() == backButton) {
